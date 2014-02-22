@@ -1,4 +1,4 @@
-A canvas maze generated and solute by DFS.
+A canvas maze generated and soluted by DFS.
 ==========================================
 
 [demo.](https://Sidong.github.io/canvas-maze-by-DFS/)
