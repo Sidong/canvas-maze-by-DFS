@@ -1,10 +1,10 @@
-$(document).ready(function() {
+window.onload = function() {
 	// canvas;
-	var canvas = $('#maze')[0];
+	var canvas = document.getElementById('maze');
 	var ctx = canvas.getContext('2d');
 	var W = canvas.width;
 	var H = canvas.height;
-	var cw = 20;
+	var cw = 100;
 	var cellNum = W/cw;
 	var totalCells = cellNum * cellNum;
 	var isGenerated = false;
@@ -21,7 +21,7 @@ $(document).ready(function() {
 
 	// the maze data structure
 	var maze;
-	maze_g = maze;	// the global variable for testing;
+	maze_g = maze;  // the global variable for testing;
 	var cellStack = [];
 	var popCellStack = [];
 	var solutionStack = [];
@@ -225,20 +225,30 @@ $(document).ready(function() {
 			draw_position({x:tmpCell.x, y:tmpCell.y});
 		}
 	}
-	$(document).keydown(function(e) {
-		if (e.which == 39) {
+
+	// keydown listener;
+	var ie;
+	if (document.all) ie = true; 
+	else ie = false; // IE?
+	document.onkeydown = Control;
+	function Control(event){
+		var key;
+		if (ie) key = event.keyCode;
+		else
+			key = Control.arguments[0].keyCode;
+		if (key == 39) {
 			generate_loop = setInterval(create_maze_DFS, 0.1);
 			draw_position();
-		} else if (e.which == 37) {
+		} else if (key == 37) {
 			if (generate_loop != undefined) clearInterval(generate_loop);
 			init();
-		} else if (e.which == 40) {
+		} else if (key == 40) {
 			if (isGenerated) {
 				draw_path();
 			}
-		} else if (e.which == 38) {
+		} else if (key == 38) {
 			draw_walls();
 			draw_position();
-		}
-	});
-});
+	 }
+	}
+}
