@@ -4,7 +4,7 @@ $(document).ready(function() {
 	var ctx = canvas.getContext('2d');
 	var W = canvas.width;
 	var H = canvas.height;
-	var cw = 100;
+	var cw = 20;
 	var cellNum = W/cw;
 	var totalCells = cellNum * cellNum;
 	var isGenerated = false;
