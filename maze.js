@@ -221,7 +221,7 @@ window.onload = function() {
 		var tmpCell;
 		var tmpSolutionStack = solutionStack.slice(0,solutionStack.length);
 		while (tmpSolutionStack.length > 0) {
-			tmpCell = tmpSolutionStack.pop();
+			tmpCell = tmpSolutionStack.shift();
 			draw_position({x:tmpCell.x, y:tmpCell.y});
 		}
 	}
@@ -248,6 +248,8 @@ window.onload = function() {
 			}
 		} else if (key == 38) {
 			draw_walls();
+			currentCell.x = 0;
+			currentCell.y = 0;
 			draw_position();
 	 }
 	}
