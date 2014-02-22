@@ -4,7 +4,7 @@ $(document).ready(function() {
 	var ctx = canvas.getContext('2d');
 	var W = canvas.width;
 	var H = canvas.height;
-	var cw = 15;
+	var cw = 100;
 	var cellNum = W/cw;
 	var totalCells = cellNum * cellNum;
 	var isGenerated = false;
@@ -219,8 +219,9 @@ $(document).ready(function() {
 		draw_walls();
 		// draw the solution stack;
 		var tmpCell;
-		while (solutionStack.length > 0) {
-			tmpCell = solutionStack.pop();
+		var tmpSolutionStack = solutionStack.slice(0,solutionStack.length);
+		while (tmpSolutionStack.length > 0) {
+			tmpCell = tmpSolutionStack.pop();
 			draw_position({x:tmpCell.x, y:tmpCell.y});
 		}
 	}
@@ -235,6 +236,9 @@ $(document).ready(function() {
 			if (isGenerated) {
 				draw_path();
 			}
+		} else if (e.which == 38) {
+			draw_walls();
+			draw_position();
 		}
 	});
 });
