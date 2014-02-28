@@ -1,10 +1,10 @@
-window.onload = function() {
+$(document).ready(function() {
 	// canvas;
-	var canvas = document.getElementById('maze');
+	var canvas = $('#maze')[0];
 	var ctx = canvas.getContext('2d');
 	var W = canvas.width;
 	var H = canvas.height;
-	var cw = 100;
+	var cw = 60;
 	var cellNum = W/cw;
 	var totalCells = cellNum * cellNum;
 	var isGenerated = false;
@@ -14,7 +14,7 @@ window.onload = function() {
 	var neighbours;
 	// x representx the line, y represents the column;
 	var currentCell;
-	var startCell = {x:0, y:0};
+	var userCell = {x:0, y:0};
 	var visitedCells;
 	// interval;
 	var generate_loop;
@@ -47,6 +47,7 @@ window.onload = function() {
 		visited = 1;
 		visitedCells = 1;
 		currentCell = {x:0, y:0};
+		userCell = {x:0,y:0};
 		isGenerated = false;
 		maze = [];
 		cellStack = [];
@@ -132,14 +133,18 @@ window.onload = function() {
 		ctx.lineWidth = 5;
 		ctx.strokeRect(0,0,W,H);
 	}
-	function draw_position(pos) {
+	function draw_position(pos,color) {
 		// draw the current position;
 		var position = pos ? pos : currentCell;
 		ctx.beginPath();
-		ctx.fillStyle = 'lightgreen';
+		ctx.fillStyle = color ? color : '#69bf97';
 		// x represents the line, y represents the column;
 		ctx.arc((position.y+0.5)*cw, (position.x+0.5)*cw, cw/3, 2*Math.PI, false);
 		ctx.fill();
+	}
+	function clear_position(pos) {
+		var position = pos ? pos : userCell;
+		ctx.clearRect((position.y+0.5)*cw-cw/3, (position.x+0.5)*cw-cw/3, cw*2/3, cw*2/3);
 	}
 	function create_maze_DFS() {
 		if (visitedCells < totalCells)
@@ -186,6 +191,10 @@ window.onload = function() {
 			clearInterval(generate_loop);
 		}
 		draw_walls();
+		if (isGenerated) {
+			draw_destination();
+			currentCell.x = 0; currentCell.y = 0;
+		}
 		draw_position();
 	}
 	function find_neighbours(position) {
@@ -222,35 +231,81 @@ window.onload = function() {
 		var tmpSolutionStack = solutionStack.slice(0,solutionStack.length);
 		while (tmpSolutionStack.length > 0) {
 			tmpCell = tmpSolutionStack.shift();
-			draw_position({x:tmpCell.x, y:tmpCell.y});
+			draw_position({x:tmpCell.x, y:tmpCell.y},'#61868c');
 		}
+	}
+	function draw_destination() {
+		ctx.fillStyle = '#69bf97';
+		var pos = (cellNum-1) * cw;
+		ctx.fillRect(pos+2,pos+2,cw-4,cw-4);
+		draw_position({x:cellNum-1,y:cellNum-1},'white');
 	}
 
 	// keydown listener;
-	var ie;
-	if (document.all) ie = true; 
-	else ie = false; // IE?
-	document.onkeydown = Control;
-	function Control(event){
-		var key;
-		if (ie) key = event.keyCode;
-		else
-			key = Control.arguments[0].keyCode;
-		if (key == 39) {
-			generate_loop = setInterval(create_maze_DFS, 0.1);
-			draw_position();
-		} else if (key == 37) {
-			if (generate_loop != undefined) clearInterval(generate_loop);
-			init();
-		} else if (key == 40) {
-			if (isGenerated) {
-				draw_path();
+	$(document).keydown(function(event) {
+		console.log(event.which);
+			if (event.which == 71) { // "g",generate;
+				generate_loop = setInterval(create_maze_DFS, 0.1);
+				draw_position();
+			} else if (event.which == 78) { // "n",new;
+				if (generate_loop != undefined) clearInterval(generate_loop);
+				init();
+			} else if (event.which == 83) { // "s",solution;
+				if (isGenerated) {
+					draw_path();
+				}
+			} else if (event.which == 72) { // "h",hide;
+				draw_walls();
+				currentCell.x = 0;
+				currentCell.y = 0;
+				draw_position(userCell);
+				draw_destination();
+			} else if (isGenerated && (event.which == 74 || event.which == 73 || event.which == 76 || event.which == 75)) {
+				switch(event.which)
+				{
+					case 37: // j(left);
+						if (maze[userCell.x][userCell.y].wall[0] == 0) {
+							clear_position();
+							userCell.y-=1;
+							draw_walls();
+							draw_destination();
+							draw_position(userCell);
+						}
+						break;
+					case 38: // i(up)
+						if (maze[userCell.x][userCell.y].wall[3] == 0) {
+							clear_position();
+							userCell.x-=1;
+							draw_walls();
+							draw_destination();
+							draw_position(userCell);
+						}
+						break;
+					case 39: // l(right)
+						if (maze[userCell.x][userCell.y].wall[2] == 0) {
+							clear_position();
+							userCell.y+=1;
+							draw_walls();
+							draw_destination();
+							draw_position(userCell);
+						}
+						break;
+					case 40: // k(down)
+						if (maze[userCell.x][userCell.y].wall[1] == 0) {
+							clear_position();
+							userCell.x+=1;
+							draw_walls();
+							draw_destination();
+							draw_position(userCell);
+						}
+						break;
+				}
+				if (userCell.x == cellNum-1 && userCell.y == cellNum-1) {
+					isGenerated = false;
+					$('#success').fadeIn('slow');
+					setTimeout(function(){$('#success').fadeOut('slow')}, 3000);
+					setTimeout(init, 3000);
+				}
 			}
-		} else if (key == 38) {
-			draw_walls();
-			currentCell.x = 0;
-			currentCell.y = 0;
-			draw_position();
-	 }
-	}
-}
+	});
+});

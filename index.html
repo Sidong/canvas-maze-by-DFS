@@ -3,14 +3,20 @@
 	<meta charset="UTF-8">
 	<title>Maze</title>
 	<style>
-		#instruction {
-			width: 600px;
-			margin: 0px auto 0px auto;
+		* {
+			margin: 0;
+			padding: 0;
 		}
-		#container {
+		body {
+			font-family: monospace;
+		}
+		#mazeContainer {
+			position: relative;
 			width: 600px;
-			margin: 0px auto;
+			height: 600px;
+			margin: 30px auto;
 			text-align: center;
+			box-shadow: 0px 0px 3px 3px rgba(0,0,0,.5);
 		}
 		kbd {
 			display: inline-block;
@@ -22,20 +28,57 @@
 			text-align: center;
 			line-height: 1;
 		}
+		#mazeInstruction {
+			text-align: left;
+			position: absolute;
+			right: -47%;
+			top: 27%;
+			font-size: 20px;
+		}
+		#game {
+			position: absolute;
+			top: 10%;
+			right: -33%;
+			font-size: 3em;
+		}
+		.brace {
+			color: #f85d5d;
+		}
+		.brace2 {
+			color: #69bf97;
+			vertical-align: middle;
+		}
+		#success {
+			position: absolute;
+			top: 40%;
+			left: 40%;
+			font-size: 3em;
+			color: #f85d5d;
+			display: none;
+		}
 	</style>
 </head>
 <body>
-	<div id="container">
+	<div id="mazeContainer">
 		<canvas id="maze" width="600" height="600"></canvas>
+		<div id="game"><span class="brace">{</span><span class="brace2">#</span>Maze<span class="brace">}</span></div>
+		<div id="mazeInstruction">
+			<p>Tip:</p>
+			<p><kbd>G</kbd>-创建(generate)迷宫</p>
+			<p><kbd>S</kbd>-解决(solute)迷宫</p>
+			<p><kbd>H</kbd>-隐藏(hide)路径</p>
+			<p><kbd>N</kbd>-新建(new)迷宫</p>
+			<br>
+			<p>控制:</p>
+			<p><kbd>←</kbd>-左移(left)</p>
+			<p><kbd>↑</kbd>-上移(up)</p>
+			<p><kbd>→</kbd>-右移(right)</p>
+			<p><kbd>↓</kbd>-下移(down)</p>
+		</div>
+		<div id="success">Success!</div>
 	</div>
-	<div id="instruction">
-		<p>
-			<kbd>⇥</kbd> 创建迷宫 &nbsp;
-			<kbd>↓</kbd> 迷宫出路 &nbsp;
-			<kbd>↑</kbd> 隐藏路径 &nbsp;
-			<kbd>←</kbd> 初始化迷宫 &nbsp;
-		</p>
-	</div>
+	
+	<script src="jquery.js" type="text/javascript"></script>
 	<script src="maze.js" type="text/javascript"></script>
 </body>
 </html>
